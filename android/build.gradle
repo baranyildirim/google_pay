@@ -1,0 +1,49 @@
+group 'com.googlepay.googlepay'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 16
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    implementation 'com.google.android.gms:play-services-wallet:11.4.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
+    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
+    implementation 'com.stripe:stripe-android:8.5.0'
+}
+
+
