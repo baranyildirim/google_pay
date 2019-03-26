@@ -40,6 +40,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public class GooglePayPlugin implements MethodCallHandler {
     private static int LOAD_PAYMENT_DATA_REQUEST_CODE = 42;
     private PaymentsClient _paymentsClient;
+    private PaymentMethodTokenizationParameters _tokenizationParameters;
     private Activity _activity;
 
     private GooglePayPlugin(Activity activity) {
@@ -97,6 +98,9 @@ public class GooglePayPlugin implements MethodCallHandler {
         if (call.method.equals("getPlatformVersion")) {
           result.success("Android " + android.os.Build.VERSION.RELEASE);
         }
+        if (call.method.equals("initializeGooglePay")) {
+          initalizeGooglePay(result, call.argument("stripeKey"));
+        }
         if (call.method.equals("checkIsReadyToPay")) {
           getIsReadyToPay(result);
         }
@@ -106,6 +110,11 @@ public class GooglePayPlugin implements MethodCallHandler {
         else {
           result.notImplemented();
         }
+    }
+
+    private void initalizeGooglePay(Result result, String stripeKey) {
+        _tokenizationParameters = createTokenizationParameters(stripeKey);
+        result.success(null);
     }
 
     private void getIsReadyToPay(Result result){
@@ -142,6 +151,9 @@ public class GooglePayPlugin implements MethodCallHandler {
 }
 
     private PaymentDataRequest createPaymentDataRequest(String price) {
+        if (_tokenizationParameters == null)
+            return null;
+
         PaymentDataRequest.Builder request =
                 PaymentDataRequest.newBuilder()
                         .setTransactionInfo(
@@ -161,15 +173,15 @@ public class GooglePayPlugin implements MethodCallHandler {
                                                 WalletConstants.CARD_NETWORK_MASTERCARD))
                                         .build());
 
-        request.setPaymentMethodTokenizationParameters(createTokenizationParameters());
+        request.setPaymentMethodTokenizationParameters(_tokenizationParameters);
         return request.build();
     }
 
-    private PaymentMethodTokenizationParameters createTokenizationParameters() {
+    private PaymentMethodTokenizationParameters createTokenizationParameters(String stripeKey) {
         return PaymentMethodTokenizationParameters.newBuilder()
                 .setPaymentMethodTokenizationType(WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
                 .addParameter("gateway", "stripe")
-                .addParameter("stripe:publishableKey", "pk_test_H5CJvRiPfCrRS44bZJLu46fM00UjQ0vtRN")
+                .addParameter("stripe:publishableKey", stripeKey)
                 .addParameter("stripe:version", "2018-11-08")
                 .build();
     }

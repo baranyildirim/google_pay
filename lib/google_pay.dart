@@ -41,6 +41,18 @@ class GooglePay {
     }
   }
 
+  static Future initializeGooglePay(@required String stripeKey) async{
+    try {
+      var params = <String, dynamic>{
+        'stripeKey': stripeKey
+      };
+      await _channel.invokeMethod('initializeGooglePay', params);
+    } on PlatformException catch (ex) {
+      print('Platform exception in initializeGooglePay:\n');
+      print(ex);
+    } 
+  }
+
   static Future<dynamic> _nativeCallHandler(MethodCall call) async {
     print('Call to native call handler:\n');
     print(call.method);
