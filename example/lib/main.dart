@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:google_pay/google_pay.dart';
 
@@ -80,8 +79,8 @@ class _MyAppState extends State<MyApp> {
     
   }
 
-  void onSuccess(dynamic args){ 
-    setState((){_googlePayToken = "Success";});
+  void onSuccess(String token){ 
+    setState((){_googlePayToken = token;});
   }
 
   void onFailure(){ 

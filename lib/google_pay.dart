@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
+import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'payment_details.dart';
 
 
-typedef GooglePaySuccessCallback = void Function(dynamic args);
+typedef GooglePaySuccessCallback = void Function(String token);
 typedef GooglePayFailureCallback = void Function();
 typedef GooglePayCancelCallback = void Function();
 
@@ -34,7 +36,7 @@ class GooglePay {
       };
       await _channel.invokeMethod('openGooglePaySetup', params);
     } on PlatformException catch (ex) {
-      print("Platform exception in openGooglePaySetup:\n");
+      print('Platform exception in openGooglePaySetup:\n');
       print(ex);
     }
   }
@@ -54,8 +56,7 @@ class GooglePay {
         case 'onGooglePaySuccess':
           if (_googlePaySuccessCallback != null) {
             var result = call.arguments;
-            print('Executing google pay success callback');
-            _googlePaySuccessCallback(result);
+            _googlePaySuccessCallback(result['token']);
           }
           break;
         case 'onGooglePayFailed':
@@ -68,7 +69,7 @@ class GooglePay {
           throw Exception('unknown method called from native');
       }
     } on Exception catch (ex) {
-      print("nativeCallHandler caught an exception:\n");
+      print('nativeCallHandler caught an exception:\n');
       print(ex);
     }
     return false;

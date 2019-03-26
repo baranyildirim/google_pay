@@ -67,7 +67,6 @@ public class GooglePayPlugin implements MethodCallHandler {
                             String rawToken = paymentData.getPaymentMethodToken().getToken();
                             // Now that you have a Stripe token object, charge that by using the id
                             Token stripeToken = Token.fromString(rawToken);
-
                             Map<String, Object> arguments = new LinkedHashMap<>();
                             arguments.put("token", stripeToken.getId());
 
