@@ -150,7 +150,7 @@ public class GooglePayPlugin implements MethodCallHandler {
         result.success(null);
 }
 
-    private PaymentDataRequest createPaymentDataRequest(String price) {
+    private PaymentDataRequest createPaymentDataRequest(String price, String currency) {
         if (_tokenizationParameters == null)
             return null;
 
@@ -160,7 +160,7 @@ public class GooglePayPlugin implements MethodCallHandler {
                                 TransactionInfo.newBuilder()
                                         .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
                                         .setTotalPrice(price)
-                                        .setCurrencyCode("USD")
+                                        .setCurrencyCode(currency)
                                         .build())
                         .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
                         .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_TOKENIZED_CARD)
@@ -176,6 +176,10 @@ public class GooglePayPlugin implements MethodCallHandler {
         request.setPaymentMethodTokenizationParameters(_tokenizationParameters);
         return request.build();
     }
+    
+     private PaymentDataRequest createPaymentDataRequest(String price) {
+        createPaymentDataRequest(price, "USD")
+     }
 
     private PaymentMethodTokenizationParameters createTokenizationParameters(String stripeKey) {
         return PaymentMethodTokenizationParameters.newBuilder()
